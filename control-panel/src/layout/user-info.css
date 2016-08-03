@@ -1,0 +1,11 @@
+.user-info {
+  display: inline-block;
+  padding: 0 10px;
+}
+
+.user-info__photo {
+  border-radius: 50%;
+  height: 48px;
+  margin-right: 10px;
+  width: 48px;
+}
