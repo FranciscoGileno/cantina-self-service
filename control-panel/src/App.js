@@ -22,14 +22,15 @@ class App extends Component {
 
     this.auth.onAuthStateChanged((user) => {
       console.log('onAuthStateChanged', user);
-      if (user) {
-        this.setState({ user: user });
-        return;
-      }
+      this.setState({
+        isLoading: false,
+        user: user
+      });
     });
 
     this.state = {
-      user: this.auth.currentUser,
+      isLoading: true,
+      user: null,
     };
   }
 
@@ -42,16 +43,16 @@ class App extends Component {
     this.auth.signOut();
   }
 
-  componentWillMount() {
-    console.log('componentWillMount');
-  }
-
   render() {
-    console.log('user: ', this.state.user);
+    console.log("render", this.state);
     return (
       <div className="App">
         <Layout user={this.state.user} onSignout={this.handleSignout}>
-          {this.state.user ? <ProductList /> : <button onClick={this.handleLogin}>Login</button> }
+          {
+            this.state.isLoading
+            ? <div>Loading...</div>
+            : (this.state.user ? <ProductList /> : <button onClick={this.handleLogin}>Login</button>)
+          }
         </Layout>
       </div>
     );
