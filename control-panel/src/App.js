@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import Layout from './layout/Layout.js';
+import Layout from './layout/layout';
 import firebase from 'firebase';
-import ProductList from './products/product-list.js';
 
 class App extends Component {
   constructor(props) {
@@ -43,6 +42,7 @@ class App extends Component {
     this.auth.signOut();
   }
 
+
   render() {
     console.log("render", this.state);
     return (
@@ -51,7 +51,7 @@ class App extends Component {
           {
             this.state.isLoading
             ? <div>Loading...</div>
-            : (this.state.user ? <ProductList /> : <button onClick={this.handleLogin}>Login</button>)
+            : (this.state.user ? this.props.children : <button onClick={this.handleLogin}>Login</button>)
           }
         </Layout>
       </div>

@@ -1,5 +1,6 @@
 import React from 'react';
-import UserInfo from './user-info.js';
+import NavLink from '../navlink';
+import UserInfo from './user-info';
 
 const Layout = ({ children, onSignout, user }) => (
   <div className="mdl-layout mdl-js-layout mdl-layout--fixed-drawer mdl-layout--fixed-header">
@@ -9,7 +10,7 @@ const Layout = ({ children, onSignout, user }) => (
         <div className="mdl-layout-spacer"></div>
         {user ? (
           <nav className="mdl-navigation mdl-layout--large-screen-only">
-            <a className="mdl-navigation__link" href="" onClick={onSignout}>
+            <a className="mdl-navigation__link mdl-color-text--grey-900" href="" onClick={onSignout}>
               <UserInfo name={user.displayName} photoUrl={user.photoURL} />
               Logout
             </a>
@@ -17,13 +18,13 @@ const Layout = ({ children, onSignout, user }) => (
         ) : ''}
       </div>
     </header>
-    <div className="mdl-layout__drawer">
+    <div className="mdl-layout__drawer mdl-color--blue-grey-900 mdl-color-text--blue-grey-50">
       <span className="mdl-layout-title">Control Panel</span>
       <nav className="mdl-navigation">
-        <a className="mdl-navigation__link" href="">Dashboard</a>
-        <a className="mdl-navigation__link" href="">Products</a>
-        <a className="mdl-navigation__link" href="">Categories</a>
-        <a className="mdl-navigation__link" href="">Cart</a>
+        <NavLink to="/" onlyActiveOnIndex={true}>Dashboard</NavLink>
+        <NavLink to="/products">Products</NavLink>
+        <NavLink to="/categories">Categories</NavLink>
+        <NavLink to="/orders">Orders</NavLink>
       </nav>
     </div>
     <main className="mdl-layout__content mdl-color--grey-100">
