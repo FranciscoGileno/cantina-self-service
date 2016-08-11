@@ -1,9 +1,23 @@
-.user-info {
-  display: inline-block;
+* {
+  box-sizing: border-box;
+}
+.css-card {
+  margin: 8px;
+  width: 200px;
+}
+.css-card .mdl-card__media {
+  width: 200px;
+  height: 200px;
+}
 
-  &__photo {
-    border-radius: 50%;
-    width: 48px;
-    height: 48px;
-  }
+.css-card__img {
+  background-color: #fff;
+  padding: 8px;
+  width: 200px;
+  height: 200px;
+}
+
+.css-card .mdl-card__title,
+.css-card .mdl-card__supporting-text {
+  padding: 8px;
 }
