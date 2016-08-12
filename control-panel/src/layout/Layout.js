@@ -12,7 +12,6 @@ const Layout = ({ children, onSignout, user }) => (
           <nav className="mdl-navigation mdl-layout--large-screen-only">
             <a className="mdl-navigation__link" href="" onClick={onSignout}>
               <UserInfo name={user.displayName} photoUrl={user.photoURL} />
-              Logout
             </a>
           </nav>
         ) : ''}
@@ -22,9 +21,9 @@ const Layout = ({ children, onSignout, user }) => (
       <span className="mdl-layout-title">Control Panel</span>
       <nav className="mdl-navigation">
         <NavLink to="/" onlyActiveOnIndex={true}>Dashboard</NavLink>
-        <NavLink to="/products">Products</NavLink>
-        <NavLink to="/categories">Categories</NavLink>
-        <NavLink to="/orders">Orders</NavLink>
+        <NavLink to="/products">Produtos</NavLink>
+        <NavLink to="/categories">Categorias</NavLink>
+        <NavLink to="/orders">Compras</NavLink>
       </nav>
     </div>
     <main className="mdl-layout__content mdl-color--grey-200">

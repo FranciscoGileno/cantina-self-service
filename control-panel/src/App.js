@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Layout from './layout/layout';
 import firebase from 'firebase';
-import css from './App.css';
+import './App.css';
 
 class App extends Component {
   constructor(props) {
@@ -45,14 +45,15 @@ class App extends Component {
 
 
   render() {
+    const { children, ...props } = this.props;
     console.log("render", this.state);
     return (
       <div className="App">
-        <Layout user={this.state.user} onSignout={this.handleSignout}>
+        <Layout user={this.state.user} onSignout={this.handleSignout} {...props}>
           {
             this.state.isLoading
             ? <div>Loading...</div>
-            : (this.state.user ? this.props.children : <button onClick={this.handleLogin}>Login</button>)
+            : (this.state.user ? children : <button onClick={this.handleLogin}>Login</button>)
           }
         </Layout>
       </div>
