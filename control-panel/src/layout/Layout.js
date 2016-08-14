@@ -27,9 +27,7 @@ const Layout = ({ children, onSignout, user }) => (
       </nav>
     </div>
     <main className="mdl-layout__content mdl-color--grey-200">
-      <div>
-        {children}
-      </div>
+      {children}
     </main>
   </div>
 );

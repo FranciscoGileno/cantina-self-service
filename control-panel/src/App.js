@@ -9,7 +9,6 @@ class App extends Component {
 
     this.handleLogin = this.handleLogin.bind(this);
     this.handleSignout = this.handleSignout.bind(this);
-    console.log('constructor');
 
     const firebaseApp = firebase.initializeApp({
       apiKey: 'AIzaSyCZVjDEhIriyoXIg-lihfRZ9WvA3ZuhJ2o',
@@ -19,9 +18,9 @@ class App extends Component {
     });
 
     this.auth = firebaseApp.auth();
+    this.database = firebaseApp.database();
 
     this.auth.onAuthStateChanged((user) => {
-      console.log('onAuthStateChanged', user);
       this.setState({
         isLoading: false,
         user: user
@@ -34,6 +33,12 @@ class App extends Component {
     };
   }
 
+  getChildContext() {
+    return {
+      database: this.database
+    };
+  }
+
   handleLogin() {
     var provider = new firebase.auth.GoogleAuthProvider();
     this.auth.signInWithPopup(provider);
@@ -43,10 +48,8 @@ class App extends Component {
     this.auth.signOut();
   }
 
-
   render() {
     const { children, ...props } = this.props;
-    console.log("render", this.state);
     return (
       <div className="App">
         <Layout user={this.state.user} onSignout={this.handleSignout} {...props}>
@@ -61,4 +64,7 @@ class App extends Component {
   }
 }
 
+App.childContextTypes = {
+  database: React.PropTypes.object
+};
 export default App;
