@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import App from './App';
 import Dashboard from './dashboard/dashboard';
 import ProductList from './products/product-list';
-import CategoryList from './categories/category-list';
+import CategoryList from './categories/CategoryList';
 import OrderList from './orders/order-list';
 import './index.css';
 import { Router, IndexRoute, Route, browserHistory } from 'react-router';
