@@ -9,10 +9,8 @@ const Layout = ({ children, onSignout, user }) => (
         <span className="mdl-layout-title">Cantina Self Service - BRUM</span>
         <div className="mdl-layout-spacer"></div>
         {user ? (
-          <nav className="mdl-navigation mdl-layout--large-screen-only">
-            <a className="mdl-navigation__link" href="" onClick={onSignout}>
-              <UserInfo name={user.displayName} photoUrl={user.photoURL} />
-            </a>
+          <nav className="mdl-navigation">
+            <UserInfo name={user.displayName} photoUrl={user.photoURL} onSignout={onSignout} />
           </nav>
         ) : ''}
       </div>

@@ -21,3 +21,9 @@
 .css-card .mdl-card__supporting-text {
   padding: 8px;
 }
+
+.css-fab {
+  bottom: 16px;
+  position: absolute;
+  right: 16px;
+}

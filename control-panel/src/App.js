@@ -33,6 +33,10 @@ class App extends Component {
     };
   }
 
+  componentDidUpdate() {
+    window.componentHandler.upgradeDom();
+  }
+
   getChildContext() {
     return {
       database: this.database
@@ -55,7 +59,7 @@ class App extends Component {
         <Layout user={this.state.user} onSignout={this.handleSignout} {...props}>
           {
             this.state.isLoading
-            ? <div>Loading...</div>
+            ? <div className="mdl-spinner mdl-js-spinner is-active"></div>
             : (this.state.user ? children : <button onClick={this.handleLogin}>Login</button>)
           }
         </Layout>
