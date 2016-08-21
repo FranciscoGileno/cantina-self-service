@@ -3,64 +3,56 @@ import Category from './Category';
 import CategoryAdd from './CategoryAdd';
 
 class CategoryList extends React.Component {
-  constructor(props) {
+  constructor(props, context) {
     super(props);
     this.state = {
       categories: [],
       isDialogOpen: false
     }
 
-    this.handleNewItem = this.handleNewItem.bind(this);
-    this.handleCancelClick = this.handleCancelClick.bind(this);
+    this.categoryRef = context.database.ref('categories');
+    this.storage = context.storage;
+  }
+
+  updateCategory = (category, imageUrl) => {
+    this.setState({
+      categories: [...this.state.categories, {...category, imageUrl: imageUrl } ]
+    });
   }
 
   componentDidMount() {
-    const categoriesRef = this.context.database.ref('categories');
-    categoriesRef.off();
+    this.categoryRef.off();
 
-    var setCategory = function(data) {
-      this.setState({
-        categories: [...this.state.categories, data.val()]
-      });
-    }.bind(this);
+    var setCategory = (data) => {
+      const category = data.val();
+      if (category.imageUrl) {
+        this.storage.refFromURL(category.imageUrl).getMetadata().then((metadata) => {
+          this.updateCategory(category, metadata.downloadURLs[0]);
+        });
+      } else {
+        this.updateCategory(category, null);
+      }
+    };
 
-    categoriesRef.on('child_added', setCategory);
-    categoriesRef.on('child_changed', setCategory);
-  }
-
-  handleNewItem(event) {
-    this.refs.categoryDialog.showModal();
-  }
-
-  handleCancelClick(event) {
-    this.refs.categoryDialog.close();
+    this.categoryRef.on('child_added', setCategory);
+    this.categoryRef.on('child_changed', setCategory);
   }
 
   render() {
     return (
-      <div className="mdl-grid">
+      <div style={{display: 'flex'}}>
         {this.state.categories.map((item, index) => (
           <Category {...item} key={index} />
         ))}
-        <dialog className="mdl-dialog css-dialog" ref="categoryDialog">
-          <div className="mdl-dialog__content">
-            <CategoryAdd />
-          </div>
-          <div className="mdl-dialog__actions">
-            <button type="button" className="mdl-button mdl-button--raised mdl-button--colored">Salvar</button>
-            <button type="button" className="mdl-button" onClick={this.handleCancelClick}>Cancel</button>
-          </div>
-        </dialog>
-        <button className="css-fab mdl-button mdl-js-button mdl-button--fab mdl-button--colored" onClick={this.handleNewItem}>
-          <i className="material-icons">add</i>
-        </button>
+        <CategoryAdd show={this.state.showModal} />
       </div>
     );
   }
 };
 
 CategoryList.contextTypes = {
-  database: React.PropTypes.object
+  database: React.PropTypes.object,
+  storage: React.PropTypes.object,
 };
 
 export default CategoryList;

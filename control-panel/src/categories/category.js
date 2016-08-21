@@ -1,9 +1,9 @@
 import React from 'react';
 
-const Category = ({name, photoUrl}) => (
+const Category = ({name, imageUrl}) => (
   <div className="mdl-card mdl-color mdl-shadow--2dp css-card">
     <div className="mdl-card__media mdl-card--border">
-      <img src={photoUrl} className="css-card__img" alt={name} />
+      <img src={imageUrl} className="css-card__img" alt={name} />
     </div>
     <div className="mdl-card__title">
       <h6 className="mdl-card__title-text">{name}</h6>
