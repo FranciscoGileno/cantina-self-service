@@ -1,22 +1,24 @@
 import React from 'react';
 import Category from './Category';
 import CategoryAdd from './CategoryAdd';
+import Loading from '../Loading';
 
 class CategoryList extends React.Component {
   constructor(props, context) {
     super(props);
     this.state = {
       categories: [],
-      isDialogOpen: false
+      isDialogOpen: false,
+      loading: true,
     }
 
     this.categoryRef = context.database.ref('categories');
     this.storage = context.storage;
   }
 
-  updateCategory = (category, imageUrl) => {
+  updateCategory = (category) => {
     this.setState({
-      categories: [...this.state.categories, {...category, imageUrl: imageUrl } ]
+      categories: [...this.state.categories, category ]
     });
   }
 
@@ -25,21 +27,16 @@ class CategoryList extends React.Component {
 
     var setCategory = (data) => {
       const category = data.val();
-      if (category.imageUrl) {
-        this.storage.refFromURL(category.imageUrl).getMetadata().then((metadata) => {
-          this.updateCategory(category, metadata.downloadURLs[0]);
-        });
-      } else {
-        this.updateCategory(category, null);
-      }
+      this.updateCategory(category);
     };
 
+    this.categoryRef.on('value', () => this.setState({ loading: false }));
     this.categoryRef.on('child_added', setCategory);
     this.categoryRef.on('child_changed', setCategory);
   }
 
   render() {
-    return (
+    const component = this.state.loading ? <Loading /> : (
       <div style={{display: 'flex'}}>
         {this.state.categories.map((item, index) => (
           <Category {...item} key={index} />
@@ -47,6 +44,7 @@ class CategoryList extends React.Component {
         <CategoryAdd show={this.state.showModal} />
       </div>
     );
+    return component;
   }
 };
 
