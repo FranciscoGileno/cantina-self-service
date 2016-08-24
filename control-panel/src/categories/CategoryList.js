@@ -17,8 +17,17 @@ class CategoryList extends React.Component {
   }
 
   updateCategory = (category) => {
+    const index = this.state.categories.map(c => c.name).indexOf(category.name);
+    let categories;
+
+    if (index === -1) {
+      categories = [...this.state.categories, category ];
+    } else {
+      categories = [...this.state.categories.slice(0, index), category, ...this.state.categories.slice(index+1)];
+    }
+
     this.setState({
-      categories: [...this.state.categories, category ]
+      categories: categories
     });
   }
 
@@ -33,11 +42,13 @@ class CategoryList extends React.Component {
     this.categoryRef.on('value', () => this.setState({ loading: false }));
     this.categoryRef.on('child_added', setCategory);
     this.categoryRef.on('child_changed', setCategory);
+    window.componentHandler.upgradeDom();
+
   }
 
   render() {
     const component = this.state.loading ? <Loading /> : (
-      <div style={{display: 'flex'}}>
+      <div style={{display: 'flex', flexWrap: 'wrap'}}>
         {this.state.categories.map((item, index) => (
           <Category {...item} key={index} />
         ))}

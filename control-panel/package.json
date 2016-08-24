@@ -8,6 +8,7 @@
   "dependencies": {
     "classnames": "^2.2.5",
     "firebase": "^3.3.0",
+    "material-design-lite": "^1.2.0",
     "react": "^15.2.1",
     "react-dom": "^15.2.1",
     "react-dropzone": "^3.5.3",

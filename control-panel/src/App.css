@@ -3,18 +3,18 @@
 }
 .css-card {
   margin: 8px;
-  width: 200px;
+  width: 280px;
 }
 .css-card .mdl-card__media {
-  width: 200px;
-  height: 200px;
+  width: 280px;
+  height: 280px;
 }
 
 .css-card__img {
   background-color: #fff;
-  padding: 8px;
-  width: 200px;
-  height: 200px;
+  padding: 8px 8px 0;
+  width: 280px;
+  height: 280px;
 }
 
 .css-card .mdl-card__title,
@@ -23,7 +23,7 @@
 }
 
 .css-fab {
-  bottom: 16px;
-  position: absolute;
-  right: 16px;
+  bottom: 32px;
+  position: fixed;
+  right: 32px;
 }

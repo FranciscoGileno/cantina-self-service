@@ -14,17 +14,26 @@ class Category extends React.Component {
   }
 
   componentDidMount() {
-    this.storage.refFromURL(this.props.imageUrl).getMetadata().then((metadata) => {
-      this.setState({
-        imageUrl: metadata.downloadURLs[0],
-        loading: false,
-      })
-    });
+    this.updateImage();
+  }
+
+  componentDidUpdate() {
+    this.updateImage();
+  }
+
+  updateImage() {
+    if (this.props.imageUrl) {
+      this.storage.refFromURL(this.props.imageUrl).getMetadata().then((metadata) => {
+        this.setState({
+          imageUrl: metadata.downloadURLs[0],
+          loading: false,
+        })
+      });
+    }
   }
 
   render() {
     const {name} = this.props;
-
     const component = this.state.loading ? <Loading /> : <img src={this.state.imageUrl} className="css-card__img" alt={name} />;
 
     return (
@@ -35,11 +44,13 @@ class Category extends React.Component {
         <div className="mdl-card__title">
           <h6 className="mdl-card__title-text">{name}</h6>
         </div>
-        <div className="mdl-card__actions mdl-card--border">
-          <a className="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" href="">
-            Block
-          </a>
-        </div>
+        {
+          // <div className="mdl-card__actions mdl-card--border">
+          //   <a className="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" href="">
+          //     Block
+          //   </a>
+          // </div>
+        }
       </div>
     );
   }
