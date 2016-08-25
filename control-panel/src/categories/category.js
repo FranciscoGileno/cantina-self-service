@@ -17,10 +17,6 @@ class Category extends React.Component {
     this.updateImage();
   }
 
-  componentDidUpdate() {
-    this.updateImage();
-  }
-
   updateImage() {
     if (this.props.imageUrl) {
       this.storage.refFromURL(this.props.imageUrl).getMetadata().then((metadata) => {
