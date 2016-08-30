@@ -4,7 +4,7 @@ const divClass = {
   backgroundColor: 'white',
   borderRadius: 5,
   border: '3px solid #f0f0f0',
-  height: '200px',
+  height: '280px',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',

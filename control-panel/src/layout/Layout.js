@@ -1,15 +1,19 @@
 import React from 'react';
-import Header from './Header';
+import UserInfo from './UserInfo';
 import Drawer from './Drawer';
-
+import * as MDL from 'react-mdl/lib/Layout';
 const Layout = ({ children}) => (
-  <div className="mdl-layout mdl-js-layout mdl-layout--fixed-drawer mdl-layout--fixed-header">
-    <Header />
+  <MDL.Layout fixedHeader fixedDrawer>
+    <MDL.Header title="Cantina Self Service - BRUM">
+      <MDL.Navigation>
+        <UserInfo />
+      </MDL.Navigation>
+    </MDL.Header>
     <Drawer />
-    <main className="mdl-layout__content mdl-color--grey-200">
+    <MDL.Content className="mdl-color--grey-200">
       {children}
-    </main>
-  </div>
+    </MDL.Content>
+  </MDL.Layout>
 );
 
 export default Layout;

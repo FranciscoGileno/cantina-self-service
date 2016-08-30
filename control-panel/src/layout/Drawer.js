@@ -1,15 +1,15 @@
 import React from 'react';
 import NavLink from '../navlink';
+import * as MDL from 'react-mdl/lib/Layout';
 
 const Drawer = () => (
-  <div className="mdl-layout__drawer">
-    <span className="mdl-layout-title">Control Panel</span>
-    <nav className="mdl-navigation">
+  <MDL.Drawer title="Control Panel">
+    <MDL.Navigation>
       <NavLink to="/products" onlyActiveOnIndex={true}>Produtos</NavLink>
       <NavLink to="/categories">Categorias</NavLink>
       <NavLink to="/orders">Compras</NavLink>
-    </nav>
-  </div>
+    </MDL.Navigation>
+  </MDL.Drawer>
 );
 
 export default Drawer;

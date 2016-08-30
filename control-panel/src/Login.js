@@ -1,13 +1,11 @@
 import React from 'react';
+import Center from './shared/Center';
+import { Button } from 'react-mdl';
 
-const flexCenter = {
-  alignItems: 'center',
-  justifyContent: 'center',
-};
 
 const Login = ({onClick}) => (
-  <div className="mdl-layout mdl-js-layout mdl-color--grey-200" style={flexCenter}>
-    <button onClick={onClick} className="mdl-button mdl-js-button mdl-button--raised" style={{height: 64}}>
+  <Center>
+    <Button onClick={onClick} raised style={{height: 64}}>
         <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32px" height="32px"
         viewBox="0 0 48 48">
           <g>
@@ -19,8 +17,8 @@ const Login = ({onClick}) => (
           </g>
         </svg>
         <span style={{marginLeft: 20}}>Sign In with Google</span>
-    </button>
-  </div>
+    </Button>
+  </Center>
 );
 
 export default Login;

@@ -1,5 +1,6 @@
 import React from 'react';
-import Loading from '../Loading';
+import Loading from '../shared/Loading';
+import { Card, CardTitle } from 'react-mdl';
 
 class Category extends React.Component {
   constructor(props, context) {
@@ -30,24 +31,15 @@ class Category extends React.Component {
 
   render() {
     const {name} = this.props;
-    const component = this.state.loading ? <Loading /> : <img src={this.state.imageUrl} className="css-card__img" alt={name} />;
+    const component = this.state.loading ? <div className="css-card__img"><Loading /></div> : <img src={this.state.imageUrl} className="css-card__img" alt={name} />;
 
     return (
-      <div className="mdl-card mdl-color mdl-shadow--2dp css-card">
-        <div className="mdl-card__media mdl-card--border">
-          {component}
-        </div>
-        <div className="mdl-card__title">
+      <Card shadow={2} className="css-card">
+        {component}
+        <CardTitle>
           <h6 className="mdl-card__title-text">{name}</h6>
-        </div>
-        {
-          // <div className="mdl-card__actions mdl-card--border">
-          //   <a className="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" href="">
-          //     Block
-          //   </a>
-          // </div>
-        }
-      </div>
+        </CardTitle>
+      </Card>
     );
   }
 }

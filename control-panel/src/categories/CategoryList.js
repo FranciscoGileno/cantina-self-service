@@ -1,7 +1,7 @@
 import React from 'react';
 import Category from './Category';
 import CategoryAdd from './CategoryAdd';
-import Loading from '../Loading';
+import Loading from '../shared/Loading';
 
 class CategoryList extends React.Component {
   constructor(props, context) {

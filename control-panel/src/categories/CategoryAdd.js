@@ -1,12 +1,14 @@
 import React from 'react';
 import Dropzone from 'react-dropzone';
 import PhotoPlaceHolder from '../shared/PhotoPlaceHolder';
+import { FABButton, Button, Card, CardTitle, Icon, Dialog, DialogActions, Textfield } from 'react-mdl';
 
 class CategoryAdd extends React.Component {
   constructor(props, context) {
     super(props);
     this.state = {
-      photo: null
+      dialogOpen: false,
+      photo: null,
     };
 
     this.categoryRef = context.database.ref('categories');
@@ -19,11 +21,16 @@ class CategoryAdd extends React.Component {
     });
   }
 
+  handleCategoryNameChange = (event) => {
+    this.categoryName = event.target.value;
+  }
+
   onSubmit = (event) => {
     event.preventDefault();
-    if (this.refs.name && this.state.photo) {
+    console.log(this.categoryName);
+    if (this.categoryName && this.state.photo) {
       this.categoryRef.push({
-        name: this.refs.name.value,
+        name: this.categoryName,
       }).then((data) => {
         const file = this.state.photo;
 
@@ -44,50 +51,43 @@ class CategoryAdd extends React.Component {
   }
 
   handleNewItem = (event) => {
-    this.refs.categoryDialog.showModal();
+    this.setState({ dialogOpen: true });
   }
 
   handleCancelClick = (event) => {
-    this.refs.categoryDialog.close();
+    this.close();
   }
 
   close = () => {
-    this.refs.categoryDialog.close();
+    this.setState({ dialogOpen: false });
   }
 
   render() {
     return (
       <div>
-        <dialog className="mdl-dialog css-dialog" ref="categoryDialog">
+        <Dialog open={this.state.dialogOpen} style={{width: 320}}>
           <form action="#" method="post" onSubmit={this.onSubmit}>
-            <div className="mdl-dialog__content">
-              <div className="mdl-card mdl-color css-card">
-                <div className="mdl-card__media" style={{backgroundColor: 'white'}}>
-                  <Dropzone onDrop={this.onDrop} multiple={false} style={{border: 0, cursor: 'pointer'}}>
-                    {
-                      this.state.photo
-                      ? <img src={this.state.photo.preview} alt="Categoria" style={{width: 200, height: 200}} />
-                      : <PhotoPlaceHolder />
-                    }
-                  </Dropzone>
-                </div>
-                <div className="mdl-card__title">
-                  <div className="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input className="mdl-textfield__input" type="text" id="name" ref="name" />
-                    <label className="mdl-textfield__label" htmlFor="name">Categoria</label>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="mdl-dialog__actions">
-              <button type="submit" className="mdl-button mdl-button--raised mdl-button--colored">Salvar</button>
-              <button type="button" className="mdl-button" onClick={this.handleCancelClick}>Cancel</button>
-            </div>
+            <Card className="css-card">
+              <Dropzone onDrop={this.onDrop} multiple={false} style={{border: 0, cursor: 'pointer'}}>
+                {
+                  this.state.photo
+                  ? <img src={this.state.photo.preview} alt="Categoria" style={{width: 280, height: 280}} />
+                  : <PhotoPlaceHolder />
+                }
+              </Dropzone>
+              <CardTitle>
+                <Textfield floatingLabel label="Categoria" id="name" onChange={this.handleCategoryNameChange} />
+              </CardTitle>
+            </Card>
+            <DialogActions>
+              <Button raised colored>Salvar</Button>
+              <Button onClick={this.handleCancelClick}>Cancel</Button>
+            </DialogActions>
           </form>
-        </dialog>
-        <button className="css-fab mdl-button mdl-js-button mdl-button--fab mdl-button--colored" onClick={this.handleNewItem}>
-          <i className="material-icons">add</i>
-        </button>
+        </Dialog>
+        <FABButton className="css-fab" colored onClick={this.handleNewItem}>
+          <Icon name="add" />
+        </FABButton>
       </div>
     );
   }
