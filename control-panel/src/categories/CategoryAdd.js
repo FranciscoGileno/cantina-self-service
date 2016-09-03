@@ -1,6 +1,7 @@
 import React from 'react';
 import Dropzone from 'react-dropzone';
 import PhotoPlaceHolder from '../shared/PhotoPlaceHolder';
+import Uploading from '../shared/Uploading';
 import { FABButton, Button, Card, CardTitle, Icon, Dialog, DialogActions, Textfield } from 'react-mdl';
 
 class CategoryAdd extends React.Component {
@@ -9,6 +10,7 @@ class CategoryAdd extends React.Component {
     this.state = {
       dialogOpen: false,
       photo: null,
+      uploading: false,
     };
 
     this.categoryRef = context.database.ref('categories');
@@ -27,7 +29,6 @@ class CategoryAdd extends React.Component {
 
   onSubmit = (event) => {
     event.preventDefault();
-    console.log(this.categoryName);
     if (this.categoryName && this.state.photo) {
       this.categoryRef.push({
         name: this.categoryName,
@@ -39,9 +40,11 @@ class CategoryAdd extends React.Component {
           .put(file, {'contentType': file.type});
 
         // Listen for upload completion.
+        this.setState({ uploading: true });
         uploadTask.on('state_changed', null, (error) => {
           console.error('There was an error uploading a file to Firebase Storage:', error);
         }, () => {
+          this.setState({ uploading: false });
           const filePath = uploadTask.snapshot.metadata.fullPath;
           data.update({ imageUrl: this.storage.ref(filePath).toString() });
           this.close();
@@ -68,13 +71,20 @@ class CategoryAdd extends React.Component {
         <Dialog open={this.state.dialogOpen} style={{width: 320}}>
           <form action="#" method="post" onSubmit={this.onSubmit}>
             <Card className="css-card">
-              <Dropzone onDrop={this.onDrop} multiple={false} style={{border: 0, cursor: 'pointer'}}>
-                {
-                  this.state.photo
-                  ? <img src={this.state.photo.preview} alt="Categoria" style={{width: 280, height: 280}} />
-                  : <PhotoPlaceHolder />
+              <div style={{height: 280, with: 280, position: 'relative'}}>
+                { this.state.uploading ?
+                  <Uploading /> :
+                  (
+                    <Dropzone onDrop={this.onDrop} multiple={false} style={{border: 0, cursor: 'pointer'}}>
+                    {
+                      this.state.photo
+                      ? <img src={this.state.photo.preview} alt="Categoria" style={{width: 280, height: 280}} />
+                      : <PhotoPlaceHolder />
+                    }
+                    </Dropzone>
+                  )
                 }
-              </Dropzone>
+              </div>
               <CardTitle>
                 <Textfield floatingLabel label="Categoria" id="name" onChange={this.handleCategoryNameChange} />
               </CardTitle>

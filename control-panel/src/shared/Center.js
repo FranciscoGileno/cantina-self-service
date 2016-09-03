@@ -12,7 +12,7 @@ const flexCenter = {
 };
 
 const Center = ({children, ...props}) => (
-  <div className="mdl-color--grey-200" style={flexCenter} {...props}>
+  <div style={flexCenter} {...props}>
     {children}
   </div>
 );

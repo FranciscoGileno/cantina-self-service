@@ -3,7 +3,7 @@ import Center from './Center';
 import { Spinner } from 'react-mdl';
 
 const Loading = () => (
-  <Center>
+  <Center className="mdl-color--grey-200">
     <Spinner />
   </Center>
 );
