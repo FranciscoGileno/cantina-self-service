@@ -23,15 +23,17 @@ class CategoryAdd extends React.Component {
     });
   }
 
-  handleCategoryNameChange = (event) => {
-    this.categoryName = event.target.value;
+  clearForm = () => {
+    this.setState({ photo: null });
+    this.refs.categoryName.inputRef.value = null;
   }
 
   onSubmit = (event) => {
+    const categoryName = this.refs.categoryName.inputRef.value;
     event.preventDefault();
-    if (this.categoryName && this.state.photo) {
+    if (categoryName && this.state.photo) {
       this.categoryRef.push({
-        name: this.categoryName,
+        name: categoryName,
       }).then((data) => {
         const file = this.state.photo;
 
@@ -48,6 +50,8 @@ class CategoryAdd extends React.Component {
           const filePath = uploadTask.snapshot.metadata.fullPath;
           data.update({ imageUrl: this.storage.ref(filePath).toString() });
           this.close();
+          this.clearForm();
+          this.props.onAdd();
         });
       });
     }
@@ -66,19 +70,20 @@ class CategoryAdd extends React.Component {
   }
 
   render() {
+    const { photo, dialogOpen, uploading } = this.state;
     return (
       <div>
-        <Dialog open={this.state.dialogOpen} style={{width: 320}}>
+        <Dialog open={dialogOpen} style={{width: 320}}>
           <form action="#" method="post" onSubmit={this.onSubmit}>
             <Card className="css-card">
               <div style={{height: 280, with: 280, position: 'relative'}}>
-                { this.state.uploading ?
+                { uploading ?
                   <Uploading /> :
                   (
                     <Dropzone onDrop={this.onDrop} multiple={false} style={{border: 0, cursor: 'pointer'}}>
                     {
-                      this.state.photo
-                      ? <img src={this.state.photo.preview} alt="Categoria" style={{width: 280, height: 280}} />
+                      photo
+                      ? <img src={photo.preview} alt="Categoria" style={{width: 280, height: 280}} />
                       : <PhotoPlaceHolder />
                     }
                     </Dropzone>
@@ -86,11 +91,11 @@ class CategoryAdd extends React.Component {
                 }
               </div>
               <CardTitle>
-                <Textfield floatingLabel label="Categoria" id="name" onChange={this.handleCategoryNameChange} />
+                <Textfield ref="categoryName" disabled={uploading} floatingLabel label="Categoria" id="name" />
               </CardTitle>
             </Card>
             <DialogActions>
-              <Button raised colored>Salvar</Button>
+              <Button raised colored disabled={uploading}>Salvar</Button>
               <Button onClick={this.handleCancelClick}>Cancel</Button>
             </DialogActions>
           </form>

@@ -17,16 +17,19 @@ class CategoryList extends React.Component {
   }
 
   componentDidMount() {
+    this.update();
+  }
+
+  update = () => {
     this.categoryRef.off();
 
     this.categoryRef.once('value').then((snapshot) => {
-      console.log(snapshot.val());
       this.setState({
         categories: snapshot.val(),
         loading: false
       });
     });
-    window.componentHandler.upgradeDom();
+
   }
 
   render() {
@@ -42,7 +45,7 @@ class CategoryList extends React.Component {
             <Category {...item} key={index} />
           ))
         }
-        <CategoryAdd show={this.state.showModal} />
+        <CategoryAdd show={this.state.showModal} onAdd={this.update} />
       </div>
     );
     return component;
