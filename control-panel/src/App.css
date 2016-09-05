@@ -2,8 +2,15 @@
   box-sizing: border-box;
 }
 .css-card {
+  border: 2px solid #fff;
   margin: 8px;
   width: 280px;
+}
+
+.css-card:hover,
+.css-card:focus {
+    border-color: rgb(255,64,129);
+    cursor: pointer;;
 }
 
 .css-card__img {

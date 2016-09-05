@@ -29,12 +29,17 @@ class Category extends React.Component {
     }
   }
 
+  handleClick = () => {
+    const { id, name, imageUrl } = this.props;
+    this.props.onClick({ id, name, imageUrl });
+  }
+
   render() {
     const {name} = this.props;
     const component = this.state.loading ? <div className="css-card__img"><Loading /></div> : <img src={this.state.imageUrl} className="css-card__img" alt={name} />;
 
     return (
-      <Card shadow={2} className="css-card">
+      <Card shadow={2} className="css-card" onClick={this.handleClick} tabIndex={0}>
         {component}
         <CardTitle>
           <h6 className="mdl-card__title-text">{name}</h6>
