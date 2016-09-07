@@ -64,7 +64,7 @@ class CategoryList extends React.Component {
           ))
         }
         <div>
-          <CategoryModal {...this.state.categoryToEdit} show={this.state.showModal} onAdded={this.update} onClose={this.handleCloseClick} />
+          <CategoryModal category={this.state.categoryToEdit} show={this.state.showModal} onAdded={this.update} onClose={this.handleCloseClick} />
           <CategoryAdd onClick={this.handleAddClick} />
         </div>
       </div>

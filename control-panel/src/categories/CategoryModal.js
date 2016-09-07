@@ -2,39 +2,24 @@ import React from 'react';
 import Dropzone from 'react-dropzone';
 import PhotoPlaceHolder from '../shared/PhotoPlaceHolder';
 import Uploading from '../shared/Uploading';
+import FirebaseImage from '../shared/FirebaseImage';
 import { Button, Card, CardTitle, Dialog, DialogActions, Textfield } from 'react-mdl';
 
 class CategoryModal extends React.Component {
   constructor(props, context) {
     super(props);
     this.state = {
-      name: props.name || '',
-      file: null,
       uploading: false,
+      name: props.category ? props.category.name : '',
     };
 
-    this.categoryRef = context.database.ref('categories');
+    this.categoriesRef = context.database.ref('categories');
     this.storage = context.storage;
   }
 
   componentWillReceiveProps(nextProps) {
-
-    this.setState({ name: nextProps.name});
-    this.updateImage();
-  }
-
-  componentDidMount() {
-    this.updateImage();
-  }
-
-  updateImage() {
-    if (this.props.imageUrl) {
-      this.storage.refFromURL(this.props.imageUrl).getMetadata().then((metadata) => {
-        this.setState({
-          imageUrl: metadata.downloadURLs[0],
-          loading: false,
-        })
-      });
+    this.state = {
+      name: nextProps.category ? nextProps.category.name : '',
     }
   }
 
@@ -46,34 +31,66 @@ class CategoryModal extends React.Component {
 
   onSubmit = (event) => {
     event.preventDefault();
-    const categoryName = this.state.name;
-    if (categoryName && this.state.file) {
-      this.categoryRef.push({
-        name: categoryName,
-      }).then((data) => {
-        const file = this.state.file;
-        const uploadTask = this.storage.ref('categories/' + file.name)
-          .put(file, {'contentType': file.type});
-
-        // Listen for upload completion.
-        this.setState({ uploading: true });
-        uploadTask.on('state_changed', null, (error) => {
-          console.error('There was an error uploading a file to Firebase Storage:', error);
-        }, () => {
-          this.setState({ uploading: false });
-          const filePath = uploadTask.snapshot.metadata.fullPath;
-          data.update({ imageUrl: this.storage.ref(filePath).toString() });
-          this.close();
-          this.props.onAdded();
-        });
-      });
+    if (this.props.category) {
+      this.updateCategory();
+      return;
     }
+
+    this.insertCategory();
+  }
+
+  insertCategory = () => {
+    const categoryName = this.state.name;
+    if (!(categoryName && this.state.file))
+      // TODO: Não preenchido
+      return;
+
+    const categoryRef = this.categoriesRef.push({
+      name: categoryName,
+    });
+
+    this.updateStorage(categoryRef);
+  }
+
+  updateCategory = () => {
+    const categoryName = this.state.name;
+    if (!categoryName)
+      // TODO: Não preenchido
+      return;
+
+    const categoryRef = this.categoriesRef.child(this.props.category.id);
+    categoryRef.update({
+      name: categoryName,
+    });
+
+    if (this.state.file) {
+      this.updateStorage(categoryRef);
+      return;
+    }
+
+    this.finishSubmit();
+  }
+
+  updateStorage = (categoryRef) => {
+    const file = this.state.file;
+    const uploadTask = this.storage.ref(`categories/${file.name}`).put(file, {'contentType': file.type});
+    this.setState({ uploading: true });
+    uploadTask.on('state_changed', null, null, () => {
+      const filePath = uploadTask.snapshot.metadata.fullPath;
+      categoryRef.update({ imageUrl: this.storage.ref(filePath).toString() });
+      this.finishSubmit();
+    });
+  }
+
+  finishSubmit = () => {
+    this.setState({ uploading: false });
+    this.close();
+    this.props.onAdded();
   }
 
   resetForm = () => {
     this.setState({
       file: null,
-      imageUrl: '',
       name: '',
     });
   }
@@ -83,18 +100,14 @@ class CategoryModal extends React.Component {
     this.props.onClose();
   }
 
-  handleNameChange = (event) => {
-    this.setState({
-      name: event.target.value
-    });
-  }
-
   render() {
-    const { name, file, imageUrl, uploading } = this.state;
-    const { show } = this.props;
-
-    console.log(file, imageUrl);
-    const img = file ? file.preview : imageUrl;
+    const { name, file, uploading } = this.state;
+    const { category, show } = this.props;
+    const img = file
+      ? <img src={file.preview} alt="Categoria" style={{width: 280, height: 280}} />
+      : category
+        ? <FirebaseImage storageUrl={category.imageUrl} />
+        : null;
     return (
       <div>
         <Dialog open={show} style={{width: 320}}>
@@ -107,7 +120,7 @@ class CategoryModal extends React.Component {
                     <Dropzone onDrop={this.onDrop} multiple={false} style={{border: 0, cursor: 'pointer'}}>
                     {
                       img
-                        ? <img src={img} alt="Categoria" style={{width: 280, height: 280}} />
+                        ? img
                         : <PhotoPlaceHolder />
                     }
                     </Dropzone>
@@ -115,7 +128,8 @@ class CategoryModal extends React.Component {
                 }
               </div>
               <CardTitle>
-                <Textfield ref="categoryName" disabled={uploading} floatingLabel label="Categoria" id="name" value={name} onChange={this.handleNameChange} />
+                <Textfield ref="categoryName" disabled={uploading} floatingLabel label="Categoria" id="name"
+                  value={name} onChange={(event) => this.setState({name: event.target.value})} />
               </CardTitle>
             </Card>
             <DialogActions>
@@ -127,6 +141,13 @@ class CategoryModal extends React.Component {
       </div>
     );
   }
+}
+
+CategoryModal.propTypes = {
+  category: React.PropTypes.object,
+  onAdded: React.PropTypes.func,
+  onClose: React.PropTypes.func,
+  show: React.PropTypes.bool,
 }
 
 CategoryModal.contextTypes = {

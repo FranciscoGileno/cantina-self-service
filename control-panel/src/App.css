@@ -7,8 +7,8 @@
   width: 280px;
 }
 
-.css-card:hover,
-.css-card:focus {
+.css-card--selectable:hover,
+.css-card--selectable:focus {
     border-color: rgb(255,64,129);
     cursor: pointer;;
 }

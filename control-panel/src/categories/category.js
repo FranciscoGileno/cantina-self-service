@@ -1,5 +1,5 @@
 import React from 'react';
-import Loading from '../shared/Loading';
+import FirebaseImage from '../shared/FirebaseImage';
 import { Card, CardTitle } from 'react-mdl';
 
 class Category extends React.Component {
@@ -11,22 +11,6 @@ class Category extends React.Component {
     }
 
     this.categoryRef = context.database.ref('categories');
-    this.storage = context.storage;
-  }
-
-  componentDidMount() {
-    this.updateImage();
-  }
-
-  updateImage() {
-    if (this.props.imageUrl) {
-      this.storage.refFromURL(this.props.imageUrl).getMetadata().then((metadata) => {
-        this.setState({
-          imageUrl: metadata.downloadURLs[0],
-          loading: false,
-        })
-      });
-    }
   }
 
   handleClick = () => {
@@ -35,12 +19,10 @@ class Category extends React.Component {
   }
 
   render() {
-    const {name} = this.props;
-    const component = this.state.loading ? <div className="css-card__img"><Loading /></div> : <img src={this.state.imageUrl} className="css-card__img" alt={name} />;
-
+    const {name, imageUrl} = this.props;
     return (
-      <Card shadow={2} className="css-card" onClick={this.handleClick} tabIndex={0}>
-        {component}
+      <Card shadow={2} className="css-card css-card--selectable" onClick={this.handleClick} tabIndex={0}>
+        <FirebaseImage storageUrl={imageUrl} />
         <CardTitle>
           <h6 className="mdl-card__title-text">{name}</h6>
         </CardTitle>
@@ -51,7 +33,6 @@ class Category extends React.Component {
 
 Category.contextTypes = {
   database: React.PropTypes.object,
-  storage: React.PropTypes.object,
 };
 
 export default Category;
