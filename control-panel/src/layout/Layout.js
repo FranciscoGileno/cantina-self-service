@@ -4,7 +4,7 @@ import Drawer from './Drawer';
 import * as MDL from 'react-mdl/lib/Layout';
 const Layout = ({ children}) => (
   <MDL.Layout fixedHeader fixedDrawer>
-    <MDL.Header title="Cantina Self Service - BRUM">
+    <MDL.Header title="CSS - BRUM">
       <MDL.Navigation>
         <UserInfo />
       </MDL.Navigation>

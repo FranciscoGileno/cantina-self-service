@@ -57,7 +57,7 @@ class CategoryList extends React.Component {
         categories.push({...this.state.categories[category], id: category});
     }
     const component = this.state.loading ? <Loading /> : (
-      <div style={{display: 'flex', flexWrap: 'wrap'}}>
+      <div style={{display: 'flex', flexWrap: 'wrap', justifyContent: 'center'}}>
         {
           categories.map((item, index) => (
             <Category {...item} key={index} onClick={this.handleCategoryEdit} />
