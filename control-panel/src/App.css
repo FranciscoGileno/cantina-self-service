@@ -15,9 +15,9 @@
 
 .css-card__img {
   background-color: #fff;
-  padding: 40px;
+  padding: 10px 40px;
   width: 280px;
-  height: 280px;
+  height: 220px;
 }
 
 .css-card .mdl-card__title,

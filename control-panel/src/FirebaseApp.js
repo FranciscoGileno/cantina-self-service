@@ -2,7 +2,7 @@ import React from 'react';
 import App from './App';
 import Login from './Login';
 import Loading from './shared/Loading';
-import ProductList from './products/product-list';
+import ProductList from './products/ProductList';
 import CategoryList from './categories/CategoryList';
 import OrderList from './orders/order-list';
 import { Router, IndexRoute, Route, browserHistory } from 'react-router';

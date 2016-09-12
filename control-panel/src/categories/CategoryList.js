@@ -1,6 +1,6 @@
 import React from 'react';
 import Category from './Category';
-import CategoryAdd from './CategoryAdd';
+import FABAdd from '../shared/FABAdd';
 import CategoryModal from './CategoryModal';
 import Loading from '../shared/Loading';
 
@@ -65,7 +65,7 @@ class CategoryList extends React.Component {
         }
         <div>
           <CategoryModal category={this.state.categoryToEdit} show={this.state.showModal} onAdded={this.update} onClose={this.handleCloseClick} />
-          <CategoryAdd onClick={this.handleAddClick} />
+          <FABAdd onClick={this.handleAddClick} />
         </div>
       </div>
     );

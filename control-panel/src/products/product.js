@@ -1,22 +1,41 @@
 import React from 'react';
+import FirebaseImage from '../shared/FirebaseImage';
+import { Card, CardTitle } from 'react-mdl';
 
-const Product = ({name, photoUrl, price}) => (
-  <div className="mdl-card mdl-color mdl-shadow--2dp css-card">
-    <div className="mdl-card__media mdl-card--border">
-      <img src={photoUrl} className="css-card__img" alt={name} />
-    </div>
-    <div className="mdl-card__title">
-      <h6 className="mdl-card__title-text">{name}</h6>
-    </div>
-    <div className="mdl-card__supporting-text">
-      <h6 className="mdl-card__title-text">{price.toLocaleString('pt-BR', {style: "currency", currency: "BRL", minimumFractionDigits: 2})}</h6>
-    </div>
-    <div className="mdl-card__actions mdl-card--border">
-      <a className="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" href="">
-        Block
-      </a>
-    </div>
-  </div>
-);
+class Product extends React.Component {
+  constructor(props, context) {
+    super(props);
+
+    this.state = {
+      loading: true,
+    }
+
+    this.categoryRef = context.database.ref('categories');
+  }
+
+  handleClick = () => {
+    const { id, name, imageUrl } = this.props;
+    this.props.onClick({ id, name, imageUrl });
+  }
+
+  render() {
+    const {name, price, imageUrl} = this.props;
+    return (
+      <Card shadow={2} className="css-card css-card--selectable" onClick={this.handleClick} tabIndex={0}>
+        <FirebaseImage storageUrl={imageUrl} />
+        <CardTitle>
+          {name}
+        </CardTitle>
+        <CardTitle>
+          R$ {price}
+        </CardTitle>
+      </Card>
+    );
+  }
+}
+
+Product.contextTypes = {
+  database: React.PropTypes.object,
+};
 
 export default Product;

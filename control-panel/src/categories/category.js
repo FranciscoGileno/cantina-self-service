@@ -24,7 +24,7 @@ class Category extends React.Component {
       <Card shadow={2} className="css-card css-card--selectable" onClick={this.handleClick} tabIndex={0}>
         <FirebaseImage storageUrl={imageUrl} />
         <CardTitle>
-          <h6 className="mdl-card__title-text">{name}</h6>
+          {name}
         </CardTitle>
       </Card>
     );
