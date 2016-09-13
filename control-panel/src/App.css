@@ -20,6 +20,10 @@
   height: 220px;
 }
 
+.css-card__img--disabled {
+  filter: grayscale(100%);
+}
+
 .css-card .mdl-card__title,
 .css-card .mdl-card__supporting-text {
   padding: 8px;

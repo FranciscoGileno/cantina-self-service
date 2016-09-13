@@ -3,24 +3,23 @@ import Dropzone from 'react-dropzone';
 import PhotoPlaceHolder from '../shared/PhotoPlaceHolder';
 import Uploading from '../shared/Uploading';
 import FirebaseImage from '../shared/FirebaseImage';
-import { Button, Card, CardTitle, Dialog, DialogActions, Textfield } from 'react-mdl';
+import { Button, Card, Dialog, DialogActions, Textfield } from 'react-mdl';
 
 class CategoryModal extends React.Component {
   constructor(props, context) {
     super(props);
     this.state = {
       uploading: false,
-      name: props.category ? props.category.name : '',
     };
 
     this.categoriesRef = context.database.ref('categories');
     this.storage = context.storage;
+    this.isEditing = false;
   }
 
   componentWillReceiveProps(nextProps) {
-    this.state = {
-      name: nextProps.category ? nextProps.category.name : '',
-    }
+    this.isEditing = nextProps.category ? true : false;
+    this.name.inputRef.value = nextProps.category ? nextProps.category.name : '';
   }
 
   onDrop = (files) => {
@@ -29,35 +28,70 @@ class CategoryModal extends React.Component {
     });
   }
 
-  onSubmit = (event) => {
-    event.preventDefault();
-    if (this.props.category) {
-      this.updateCategory();
-      return;
-    }
+  isDataValid = (cb) => {
+    const categoryName = this.name.inputRef.value;
+    if (this.isEditing && !categoryName)
+      cb(false);
+    if (!this.isEditing && (!categoryName || !this.state.file))
+      cb(false);
 
-    this.insertCategory();
+    this.updateIndexAndReturnIfDataExists(categoryName, cb);
   }
 
-  insertCategory = () => {
-    const categoryName = this.state.name;
-    if (!(categoryName && this.state.file))
-      // TODO: Não preenchido
-      return;
+  updateIndexAndReturnIfDataExists = (categoryName, cb) => {
+    categoryName = categoryName.toLowerCase();
+    const previousCategoryName = this.isEditing ? this.props.category.name.toLowerCase() : '';
+    const categoryNameRef = this.context.database.ref(`categoryNames/${categoryName}`);
+    categoryNameRef.transaction((currentData) => {
+      if (currentData !== null && !this.isEditing)
+        return;
+      if (currentData !== null && previousCategoryName !== categoryName)
+        return;
 
+      return true;
+    }, (error, commited, snapshot) => {
+      if (error) {
+        return cb(false, error);
+      } else if (!commited) {
+        return cb(false, "Já existe");
+      } else {
+        if (this.isEditing && categoryName !== previousCategoryName) {
+          this.context.database.ref(`categoryNames/${previousCategoryName}`).remove();
+        }
+        return cb(true);
+      }
+    });
+  }
+
+  onSubmit = (event) => {
+    event.preventDefault();
+
+    this.isDataValid((isValid, error) => {
+      if (!isValid) {
+        this.setState({ error: error });
+        return;
+      }
+
+      const categoryName = this.name.inputRef.value;
+      if (this.isEditing) {
+        this.updateCategory(categoryName);
+        return;
+      }
+
+      this.insertCategory(categoryName);
+    });
+  }
+
+  insertCategory = (categoryName) => {
     const categoryRef = this.categoriesRef.push({
       name: categoryName,
+      active: false,
     });
 
     this.updateStorage(categoryRef);
   }
 
-  updateCategory = () => {
-    const categoryName = this.state.name;
-    if (!categoryName)
-      // TODO: Não preenchido
-      return;
-
+  updateCategory = (categoryName) => {
     const categoryRef = this.categoriesRef.child(this.props.category.id);
     categoryRef.update({
       name: categoryName,
@@ -90,8 +124,8 @@ class CategoryModal extends React.Component {
 
   resetForm = () => {
     this.setState({
+      error: null,
       file: null,
-      name: '',
     });
   }
 
@@ -101,7 +135,7 @@ class CategoryModal extends React.Component {
   }
 
   render() {
-    const { name, file, uploading } = this.state;
+    const { error, file, uploading } = this.state;
     const { category, show } = this.props;
     const img = file
       ? <img src={file.preview} alt="Categoria" style={{width: 280, height: 280}} />
@@ -127,10 +161,11 @@ class CategoryModal extends React.Component {
                   )
                 }
               </div>
-              <CardTitle>
-                <Textfield ref="categoryName" disabled={uploading} floatingLabel label="Categoria" id="name"
-                  value={name} onChange={(event) => this.setState({name: event.target.value})} />
-              </CardTitle>
+              <div>
+                <Textfield ref={(c) => this.name = c } disabled={uploading} floatingLabel
+                  error={error} onChange={() => this.setState({ error: null })}
+                  label="Categoria" />
+              </div>
             </Card>
             <DialogActions>
               <Button raised colored disabled={uploading}>Salvar</Button>

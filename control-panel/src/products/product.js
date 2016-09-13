@@ -14,8 +14,8 @@ class Product extends React.Component {
   }
 
   handleClick = () => {
-    const { id, name, imageUrl } = this.props;
-    this.props.onClick({ id, name, imageUrl });
+    const { id, name, imageUrl, price } = this.props;
+    this.props.onClick({ id, name, imageUrl, price });
   }
 
   render() {

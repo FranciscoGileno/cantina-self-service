@@ -3,15 +3,15 @@ import Dropzone from 'react-dropzone';
 import PhotoPlaceHolder from '../shared/PhotoPlaceHolder';
 import Uploading from '../shared/Uploading';
 import FirebaseImage from '../shared/FirebaseImage';
-import { Button, Card, CardTitle, Dialog, DialogActions, Textfield } from 'react-mdl';
+import { Button, Card, Dialog, DialogActions, Textfield } from 'react-mdl';
 
 class ProductModal extends React.Component {
   constructor(props, context) {
     super(props);
     this.state = {
       uploading: false,
-      name: props.product ? props.product.name : ' ',
-      price: props.product ? props.product.price : 0,
+      name: props.product ? props.product.name : '',
+      price: props.product ? props.product.price : '',
     };
 
     this.productsRef = context.database.ref('products');
@@ -20,8 +20,8 @@ class ProductModal extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     this.state = {
-      name: nextProps.product ? nextProps.product.name : ' ',
-      price: nextProps.product ? nextProps.product.price : 0,
+      name: nextProps.product ? nextProps.product.name : '',
+      price: nextProps.product ? nextProps.product.price : '',
     }
   }
 
@@ -97,6 +97,7 @@ class ProductModal extends React.Component {
     this.setState({
       file: null,
       name: '',
+      price: '',
     });
   }
 
@@ -132,16 +133,14 @@ class ProductModal extends React.Component {
                   )
                 }
               </div>
-              <CardTitle>
+              <div>
                 <Textfield disabled={uploading} floatingLabel label="Produto" id="name" required
                   pattern="?[a-z]*" error="Campo obrigatório"
                   value={name} onChange={(event) => this.setState({name: event.target.value})} />
-              </CardTitle>
-              <CardTitle>
                 <Textfield disabled={uploading} floatingLabel label="Preço" id="price" required
                   pattern="-?[0-9]*(\,[0-9]+)?" error="Valor numérico obrigatório"
                   value={price} onChange={(event) => this.setState({price: event.target.value})} />
-              </CardTitle>
+              </div>
             </Card>
             <DialogActions>
               <Button raised colored disabled={uploading}>Salvar</Button>

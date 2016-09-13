@@ -1,5 +1,6 @@
 import React from 'react';
 import Loading from './Loading';
+import classnames from 'classnames';
 
 class FirebaseImage extends React.Component {
   constructor(props, context) {
@@ -34,10 +35,14 @@ class FirebaseImage extends React.Component {
   }
 
   render() {
+    const imgClass = classnames({
+      'css-card__img': true,
+      'css-card__img--disabled': this.props.disabled
+    });
     return (
       this.state.loading
         ? <div className="css-card__img"><Loading /></div>
-        : <img src={this.state.storageUrl} className="css-card__img" alt={name} />
+        : <img src={this.state.storageUrl} className={imgClass} alt={name} />
     )
   }
 }
