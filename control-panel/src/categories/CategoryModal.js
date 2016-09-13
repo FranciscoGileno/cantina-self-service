@@ -169,7 +169,7 @@ class CategoryModal extends React.Component {
             </Card>
             <DialogActions>
               <Button raised colored disabled={uploading}>Salvar</Button>
-              <Button onClick={this.close}>Cancel</Button>
+              <Button type="button" onClick={this.close}>Cancel</Button>
             </DialogActions>
           </form>
         </Dialog>

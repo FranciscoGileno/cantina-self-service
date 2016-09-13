@@ -11,12 +11,20 @@ class Category extends React.Component {
       active: props.active,
     }
 
-    this.categoryRef = context.database.ref('categories');
+    this.categoryRef = context.database.ref(`categories/${this.props.id}`);
   }
 
   handleClick = () => {
     const { id, name, imageUrl } = this.props;
     this.props.onClick({ id, name, imageUrl });
+  }
+
+  handleActivation = () => {
+    const newStatus = !this.state.active;
+    this.categoryRef.child('active').set(newStatus);
+    this.setState({
+      active: newStatus
+    });
   }
 
   render() {
@@ -31,7 +39,7 @@ class Category extends React.Component {
           </CardTitle>
         </div>
         <CardActions border style={{textAlign: 'right'}}>
-          <Switch checked={active} ripple onChange={() => this.setState({active: !this.state.active})} />
+          <Switch checked={active} ripple onChange={this.handleActivation} />
         </CardActions>
       </Card>
     );
