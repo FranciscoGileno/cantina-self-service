@@ -30,11 +30,14 @@ class CategoryModal extends React.Component {
 
   isDataValid = (cb) => {
     const categoryName = this.name.inputRef.value;
-    if (this.isEditing && !categoryName)
-      cb(false);
-    if (!this.isEditing && (!categoryName || !this.state.file))
-      cb(false);
-
+    if (this.isEditing && !categoryName) {
+      cb(false, "Preencha a categoria e a foto");
+      return;
+    }
+    if (!this.isEditing && (!categoryName || !this.state.file)) {
+      cb(false, "Preencha a categoria e a foto");
+      return;
+    }
     this.updateIndexAndReturnIfDataExists(categoryName, cb);
   }
 
@@ -53,7 +56,7 @@ class CategoryModal extends React.Component {
       if (error) {
         return cb(false, error);
       } else if (!commited) {
-        return cb(false, "Já existe");
+        return cb(false, "Categoria já existe");
       } else {
         if (this.isEditing && categoryName !== previousCategoryName) {
           this.context.database.ref(`categoryNames/${previousCategoryName}`).remove();
