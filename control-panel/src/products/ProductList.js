@@ -1,8 +1,8 @@
 import React from 'react';
 import Product from './Product';
+import FABAdd from '../shared/FABAdd';
 import ProductModal from './ProductModal';
 import Loading from '../shared/Loading';
-import FABAdd from '../shared/FABAdd';
 
 class ProductList extends React.Component {
   constructor(props, context) {

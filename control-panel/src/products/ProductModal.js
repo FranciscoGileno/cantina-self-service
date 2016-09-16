@@ -10,19 +10,26 @@ class ProductModal extends React.Component {
     super(props);
     this.state = {
       uploading: false,
-      name: props.product ? props.product.name : '',
-      price: props.product ? props.product.price : '',
     };
 
     this.productsRef = context.database.ref('products');
+    this.categoriesRef = context.database.ref('categories');
     this.storage = context.storage;
+    this.isEditing = false;
   }
 
   componentWillReceiveProps(nextProps) {
-    this.state = {
-      name: nextProps.product ? nextProps.product.name : '',
-      price: nextProps.product ? nextProps.product.price : '',
-    }
+    this.isEditing = nextProps.product ? true : false;
+    this.name.inputRef.value = nextProps.product ? nextProps.product.name : '';
+  }
+
+  componentDidMount() {
+    this.categoriesRef.once('value', (snap) => {
+      const categoriesObj = snap.val();
+      this.setState({
+        categories: Object.keys(categoriesObj).map(key => categoriesObj[key]),
+      });
+    })
   }
 
   onDrop = (files) => {
@@ -31,44 +38,79 @@ class ProductModal extends React.Component {
     });
   }
 
-  onSubmit = (event) => {
-    event.preventDefault();
-    if (this.props.product) {
-      this.updateProduct();
+  isDataValid = (cb) => {
+    const productName = this.name.inputRef.value;
+    if (this.isEditing && !productName) {
+      cb(false, "Preencha a categoria e a foto");
       return;
     }
-
-    this.insertProduct();
+    if (!this.isEditing && (!productName || !this.state.file)) {
+      cb(false, "Preencha a categoria e a foto");
+      return;
+    }
+    this.updateIndexAndReturnIfDataExists(productName, cb);
   }
 
-  insertProduct = () => {
-    const { name, price, file } = this.state;
+  updateIndexAndReturnIfDataExists = (productName, cb) => {
+    productName = productName.toLowerCase();
+    const previousProductName = this.isEditing ? this.props.product.name.toLowerCase() : '';
+    const productNameRef = this.context.database.ref(`productNames/${productName}`);
+    productNameRef.transaction((currentData) => {
+      if (currentData !== null && !this.isEditing)
+        return;
+      if (currentData !== null && previousProductName !== productName)
+        return;
 
-    if (!(name && price && file))
-      // TODO: Não preenchido
-      return;
+      return true;
+    }, (error, commited, snapshot) => {
+      if (error) {
+        return cb(false, error);
+      } else if (!commited) {
+        return cb(false, "Categoria já existe");
+      } else {
+        if (this.isEditing && productName !== previousProductName) {
+          this.context.database.ref(`productNames/${previousProductName}`).remove();
+        }
+        return cb(true);
+      }
+    });
+  }
 
+  onSubmit = (event) => {
+    event.preventDefault();
+
+    this.isDataValid((isValid, error) => {
+      if (!isValid) {
+        this.setState({ error: error });
+        return;
+      }
+
+      const productName = this.name.inputRef.value;
+      if (this.isEditing) {
+        this.updateProduct(productName);
+        return;
+      }
+
+      this.insertProduct(productName);
+    });
+  }
+
+  insertProduct = (productName) => {
     const productRef = this.productsRef.push({
-      name,
-      price,
+      name: productName,
+      active: false,
     });
 
     this.updateStorage(productRef);
   }
 
-  updateProduct = () => {
-    const { name, price, file } = this.state;
-    if (!(name && price && file))
-      // TODO: Não preenchido
-      return;
-
+  updateProduct = (productName) => {
     const productRef = this.productsRef.child(this.props.product.id);
     productRef.update({
-      name,
-      price,
+      name: productName,
     });
 
-    if (file) {
+    if (this.state.file) {
       this.updateStorage(productRef);
       return;
     }
@@ -95,9 +137,8 @@ class ProductModal extends React.Component {
 
   resetForm = () => {
     this.setState({
+      error: null,
       file: null,
-      name: '',
-      price: '',
     });
   }
 
@@ -107,7 +148,7 @@ class ProductModal extends React.Component {
   }
 
   render() {
-    const { name, price, file, uploading } = this.state;
+    const { error, file, uploading } = this.state;
     const { product, show } = this.props;
     const img = file
       ? <img src={file.preview} alt="Categoria" style={{width: 280, height: 280}} />
@@ -134,17 +175,18 @@ class ProductModal extends React.Component {
                 }
               </div>
               <div>
-                <Textfield disabled={uploading} floatingLabel label="Produto" id="name" required
-                  pattern="?[a-z]*" error="Campo obrigatório"
-                  value={name} onChange={(event) => this.setState({name: event.target.value})} />
-                <Textfield disabled={uploading} floatingLabel label="Preço" id="price" required
-                  pattern="-?[0-9]*(\,[0-9]+)?" error="Valor numérico obrigatório"
-                  value={price} onChange={(event) => this.setState({price: event.target.value})} />
+                <Textfield ref={(c) => this.name = c } disabled={uploading} floatingLabel
+                  error={error} onChange={() => this.setState({ error: null })}
+                  label="Produto" />
+                <Textfield ref={(c) => this.price = c } disabled={uploading} floatingLabel
+                  label="Preço" />
+                <Textfield ref={(c) => this.price = c } disabled={uploading} floatingLabel
+                  label="Preço" />
               </div>
             </Card>
             <DialogActions>
               <Button raised colored disabled={uploading}>Salvar</Button>
-              <Button onClick={this.close}>Cancel</Button>
+              <Button type="button" onClick={this.close}>Cancel</Button>
             </DialogActions>
           </form>
         </Dialog>

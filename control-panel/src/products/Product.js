@@ -1,6 +1,6 @@
 import React from 'react';
 import FirebaseImage from '../shared/FirebaseImage';
-import { Card, CardTitle } from 'react-mdl';
+import { Card, CardActions, Switch } from 'react-mdl';
 
 class Product extends React.Component {
   constructor(props, context) {
@@ -8,27 +8,44 @@ class Product extends React.Component {
 
     this.state = {
       loading: true,
+      active: props.active,
     }
 
-    this.categoryRef = context.database.ref('categories');
+    this.productRef = context.database.ref(`products/${this.props.id}`);
   }
 
   handleClick = () => {
-    const { id, name, imageUrl, price } = this.props;
-    this.props.onClick({ id, name, imageUrl, price });
+    const { id, name, imageUrl } = this.props;
+    this.props.onClick({ id, name, imageUrl });
+  }
+
+  handleActivation = () => {
+    const newStatus = !this.state.active;
+    this.productRef.child('active').set(newStatus);
+    this.setState({
+      active: newStatus
+    });
   }
 
   render() {
-    const {name, price, imageUrl} = this.props;
+    const {name, imageUrl} = this.props;
+    const { active } = this.state;
     return (
-      <Card shadow={2} className="css-card css-card--selectable" onClick={this.handleClick} tabIndex={0}>
-        <FirebaseImage storageUrl={imageUrl} />
-        <CardTitle>
-          {name}
-        </CardTitle>
-        <CardTitle>
-          R$ {price}
-        </CardTitle>
+      <Card shadow={2} className="css-card css-card--selectable" tabIndex={0}>
+        <div onClick={this.handleClick}>
+          <FirebaseImage storageUrl={imageUrl} disabled={!active} />
+          <div>
+            <h2 class="mdl-card__title">
+              {name}
+            </h2>
+            <div>
+              ops
+            </div>
+          </div>
+        </div>
+        <CardActions border style={{textAlign: 'right'}}>
+          <Switch checked={active} ripple onChange={this.handleActivation} />
+        </CardActions>
       </Card>
     );
   }
