@@ -8,16 +8,24 @@ class ProductList extends React.Component {
   constructor(props, context) {
     super(props);
     this.state = {
-      products: {},
+      categories: [],
       loading: true,
+      products: {},
       showModal: false,
     }
 
+    this.categoriesRef = context.database.ref('categories');
     this.productRef = context.database.ref('products');
     this.storage = context.storage;
   }
 
   componentDidMount() {
+    this.categoriesRef.once('value', (snap) => {
+      const categoriesObj = snap.val();
+      this.setState({
+        categories: Object.keys(categoriesObj).map(key => { return { ...categoriesObj[key], key }}),
+      });
+    });
     this.update();
   }
 
@@ -60,11 +68,11 @@ class ProductList extends React.Component {
       <div style={{display: 'flex', flexWrap: 'wrap', justifyContent: 'center'}}>
         {
           products.map((item, index) => (
-            <Product {...item} key={index} onClick={this.handleProductEdit} />
+            <Product {...item} categories={this.state.categories} key={index} onClick={this.handleProductEdit} />
           ))
         }
         <div>
-          <ProductModal product={this.state.productToEdit} show={this.state.showModal} onAdded={this.update} onClose={this.handleCloseClick} />
+          <ProductModal categories={this.state.categories} product={this.state.productToEdit} show={this.state.showModal} onAdded={this.update} onClose={this.handleCloseClick} />
           <FABAdd onClick={this.handleAddClick} />
         </div>
       </div>

@@ -1,6 +1,32 @@
 * {
   box-sizing: border-box;
 }
+
+.login {
+  background: url('assets/bg.png');
+  flex-direction: column;
+}
+
+.login__label {
+  color: #F96C0F;
+  font-family: "arial black";
+  font-size: 20px;
+  position: absolute;
+  right: 0;
+  text-shadow: -2px -2px 0 #fff,
+                0px -2px 0 #fff,
+                2px -2px 0 #fff,
+                -2px  2px 0 #fff,
+                2px  2px 0 #fff,
+                0px  2px 0 #fff,
+                2px  0px 0 #fff,
+                -2px  0px 0 #fff,
+                -2px -2px 1px #999,
+                2px -2px 1px #999,
+                -2px 2px 1px #999,
+                2px 2px 1px #999;
+}
+
 .css-card {
   border: 2px solid #fff;
   margin: 8px;
@@ -14,14 +40,18 @@
 }
 
 .css-card__img {
-  transition: all .5s ease;
+  transition: all 1s ease;
   background-color: #fff;
   padding: 10px 40px;
   width: 280px;
   height: 220px;
 }
 
-.css-card__img--disabled {
+.css-card--disabled {
+  text-decoration: line-through;
+}
+
+.css-card--disabled img {
   filter: grayscale(100%);
 }
 
@@ -29,6 +59,18 @@
 .css-card .mdl-card__supporting-text {
   padding: 8px;
 }
+
+.css-card__data .mdl-card__title-text {
+  font-family: Roboto;
+  margin: 0 10px 10px;
+}
+
+.css-card__highlight {
+  font-family: Roboto;
+  padding: 10px;
+  text-align: center;
+}
+
 
 .css-fab {
   bottom: 16px;

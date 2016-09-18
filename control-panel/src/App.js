@@ -1,17 +1,12 @@
-import React, { Component } from 'react';
+import React from 'react';
 import Layout from './layout/Layout';
 
-class App extends Component {
-  render() {
-    const { children } = this.props;
-    return (
-      <div className="App">
-        <Layout>
-          {children}
-        </Layout>
-      </div>
-    );
-  }
-}
+const App = ({ children }) => (
+  <div className="App">
+    <Layout>
+      {children}
+    </Layout>
+  </div>
+);
 
 export default App;

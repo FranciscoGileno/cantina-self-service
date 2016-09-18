@@ -11,10 +11,13 @@ const flexCenter = {
   top: 0,
 };
 
-const Center = ({children, ...props}) => (
-  <div style={flexCenter} {...props}>
-    {children}
-  </div>
-);
-
+const Center = ({children, ...props}) => {
+  console.log(props.style);
+  const centerStyle = props.style ? {...props.style, ...flexCenter } : flexCenter;
+  return (
+    <div {...props} style={centerStyle}>
+      {children}
+    </div>
+  );
+}
 export default Center;
