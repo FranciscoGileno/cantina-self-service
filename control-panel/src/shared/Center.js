@@ -12,7 +12,6 @@ const flexCenter = {
 };
 
 const Center = ({children, ...props}) => {
-  console.log(props.style);
   const centerStyle = props.style ? {...props.style, ...flexCenter } : flexCenter;
   return (
     <div {...props} style={centerStyle}>

@@ -68,7 +68,7 @@ class ProductList extends React.Component {
       <div style={{display: 'flex', flexWrap: 'wrap', justifyContent: 'center'}}>
         {
           products.map((item, index) => (
-            <Product {...item} categories={this.state.categories} key={index} onClick={this.handleProductEdit} />
+            <Product product={item} categories={this.state.categories} key={index} onClick={this.handleProductEdit} />
           ))
         }
         <div>

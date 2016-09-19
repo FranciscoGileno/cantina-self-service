@@ -9,15 +9,14 @@ class Product extends React.Component {
 
     this.state = {
       loading: true,
-      active: props.active,
+      active: props.product.active,
     }
 
-    this.productRef = context.database.ref(`products/${this.props.id}`);
+    this.productRef = context.database.ref(`products/${props.product.id}`);
   }
 
   handleClick = () => {
-    const { onClick, ...props } = this.props; // eslint-disable-line no-unused-vars
-    this.props.onClick(props);
+    this.props.onClick(this.props.product);
   }
 
   handleActivation = () => {
@@ -29,10 +28,10 @@ class Product extends React.Component {
   }
 
   render() {
-    const {name, price, categoryId, categories, imageUrl} = this.props;
+    const { product, categories } = this.props;
     const { active } = this.state;
 
-    const categoryName = categoryId ? categories.find((category) => category.key === categoryId).name : '';
+    const categoryName = product.categoryId ? categories.find((category) => category.key === product.categoryId).name : '';
 
     const cardClassNames = classnames({
       'css-card': true,
@@ -43,13 +42,13 @@ class Product extends React.Component {
     return (
       <Card shadow={2} className={cardClassNames} tabIndex={0}>
         <div onClick={this.handleClick}>
-          <FirebaseImage storageUrl={imageUrl} />
+          <FirebaseImage storageUrl={product.imageUrl} />
           <div className="css-card__data">
             <h2 className="mdl-card__title-text">
-              {name}
+              {product.name}
             </h2>
             <div className="mdl-card__title-text">
-              R$ {price}
+              R$ {product.price}
             </div>
             <div className="css-card__highlight mdl-color--grey-200">
               {categoryName}

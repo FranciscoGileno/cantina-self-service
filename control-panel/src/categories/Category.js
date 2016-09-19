@@ -1,6 +1,7 @@
 import React from 'react';
 import FirebaseImage from '../shared/FirebaseImage';
 import { Card, CardActions, Switch } from 'react-mdl';
+import classnames from 'classnames';
 
 class Category extends React.Component {
   constructor(props, context) {
@@ -30,10 +31,17 @@ class Category extends React.Component {
   render() {
     const {name, imageUrl} = this.props;
     const { active } = this.state;
+
+    const cardClassNames = classnames({
+      'css-card': true,
+      'css-card--selectable': true,
+      'css-card--disabled': !active,
+    });
+
     return (
-      <Card shadow={2} className="css-card css-card--selectable" tabIndex={0}>
+      <Card shadow={2} className={cardClassNames} tabIndex={0}>
         <div onClick={this.handleClick}>
-          <FirebaseImage storageUrl={imageUrl} disabled={!active} />
+          <FirebaseImage storageUrl={imageUrl} />
           <div className="css-card__data">
             <h2 className="mdl-card__title-text">
               {name}
