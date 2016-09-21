@@ -70,7 +70,6 @@ class FirebaseApp extends React.Component {
               <IndexRoute component={ProductList} />
               <Route path="/products" component={ProductList} />
               <Route path="/categories" component={CategoryList} />
-              <Route path="/orders" component={OrderList} />
             </Route>
           </Router>
         )

@@ -7,7 +7,6 @@ const Drawer = () => (
     <MDL.Navigation>
       <NavLink to="/products" onlyActiveOnIndex={true}>Produtos</NavLink>
       <NavLink to="/categories">Categorias</NavLink>
-      <NavLink to="/orders">Compras</NavLink>
     </MDL.Navigation>
   </MDL.Drawer>
 );
