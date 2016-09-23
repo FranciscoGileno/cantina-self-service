@@ -4,7 +4,6 @@ import Login from './Login';
 import Loading from './shared/Loading';
 import ProductList from './products/ProductList';
 import CategoryList from './categories/CategoryList';
-import OrderList from './orders/order-list';
 import { Router, IndexRoute, Route, browserHistory } from 'react-router';
 import firebase from 'firebase';
 
@@ -29,7 +28,6 @@ class FirebaseApp extends React.Component {
       loading: true,
       user: null,
     }
-
   }
 
   onAuthStateChanged = (user) => {
