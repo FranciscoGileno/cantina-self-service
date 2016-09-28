@@ -12,7 +12,7 @@ class FirebaseImage extends React.Component {
     this.storage = context.storage;
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillRecestorageiveProps(nextProps) {
     if (nextProps.storageUrl !== this.props.storageUrl)
       this.refreshImage(nextProps.storageUrl);
   }
@@ -22,9 +22,8 @@ class FirebaseImage extends React.Component {
   }
 
   refreshImage = (storageUrl) => {
-    this.setState({ loading: true });
-
     if (storageUrl) {
+      this.setState({ loading: true });
       this.storage.refFromURL(storageUrl).getMetadata().then((metadata) => {
         this.setState({
           storageUrl: metadata.downloadURLs[0],
